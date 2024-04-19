@@ -2,7 +2,7 @@ import os
 from tokenizer import MyTokenizer
 
 def main():
-    f = open("/home/ziad/Documents/faculty/8th-semester/compiler_design/repo/compiler/test_program.z", 'r')
+    f = open("tests/test1.z", 'r')
 
     file_string = f.read()
     

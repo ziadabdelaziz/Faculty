@@ -7,14 +7,14 @@ class MyTokenizer :
 
     # Define token types using regular expressions
     _token_specification = [
-        ('KEYWORD',   r'\b(if|else|for|while)\b'),
+        ('KEYWORD',   r'\b(if|else|for|while)\b'),      # keywords reserved for the language
         ('DATATYPE',  r'\b(int|bool|double|string)\b'), # data types
-        ('NUMBER',    r'\d+(\.\d*)?'),        # Integer or decimal number
-        ('ID',        r'[a-zA-Z_]\w*'),       # Identifier
-        ('OP',        r'\=\=|\+|\-|\*|\=|\>|\<'),  # operators
-        ('SYMBOL',    r'\(|\)|\;'),           # symbols
-        ('NEWLINE',   r'\n'),                 # Line ending
-        ('SKIP',      r'[ \t]+'),             # Skip over spaces and tabs
+        ('NUMBER',    r'\d+(\.\d*)?'),                  # Integer or decimal number
+        ('ID',        r'[a-zA-Z_]\w*'),                 # Identifier
+        ('OP',        r'\=\=|\+|\-|\*|\=|\>|\<'),       # operators
+        ('SYMBOL',    r'\(|\)|\;'),                     # symbols
+        ('NEWLINE',   r'\n'),                           # Line ending
+        ('SKIP',      r'[ \t]+'),                       # Skip over spaces and tabs
     ]
 
     # Combine all the regular expressions into a single pattern
@@ -28,5 +28,3 @@ class MyTokenizer :
             if kind != 'SKIP' and kind != 'NEWLINE':
                 tokens.append((kind, value))
         return tokens
-
-
