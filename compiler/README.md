@@ -22,9 +22,8 @@
 * **statements:** statement*
 * **if_statement:** `if` `(` expression `)` `{` statements `}`
 * **let_statement:** `let` identifier `=` expression `;`
-* **dec_statement:** type identifier (`=` expression)? `;`
+* **dec_statement:** type identifier `=` expression `;`
 ### Expressions:
-* **expression_list:** (expression (`,`expresion)*)?
 * **expression:** term (op term)?
 * **term:** identifier | integer_constant | string_constant | `(`expression`)` | unary_op term
 * **op:** `+` | `-` | `*` | `=` | `>` | `<`

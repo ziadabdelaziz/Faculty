@@ -32,7 +32,7 @@ class ZParser:
 
         self._indentation+=1
         print('\t'*self._indentation, terminal[0]+':', terminal[1])
-        
+
         token = self._tokenizer.get_next_token()
 
         if token[0] == 'identifier':
@@ -42,41 +42,88 @@ class ZParser:
         if token[1] == '=':
             print('\t'*self._indentation, 'op:', token[1])
             self.parse_expresion()
-        
-        token = self._tokenizer.get_next_token()
+            token = self._tokenizer.get_next_token()
+
         if token[1] == ';':
             print('\t'*self._indentation, token[0]+':', token[1])
-        
+
         self._indentation-=1
 
         return
 
     def parse_if_statement(self):
+        print('\t'*self._indentation, 'if_statement:')
+
+        self._indentation+=1
+        print('\t'*self._indentation, 'keyword:', 'if')
+
+        token = self._tokenizer.get_next_token()
+        if token[1] == '(':
+            print('\t'*self._indentation, token[0]+':', token[1])
+            self.parse_expresion()
+
+        token = self._tokenizer.get_next_token()
+        if token[1] == '(':
+            print('\t'*self._indentation, token[0]+':', token[1])
+            
+        token = self._tokenizer.get_next_token()
+        if token[1] == '{':
+            print('\t'*self._indentation, token[0]+':', token[1])
+            self.parse_statements()
+        
+        token = self._tokenizer.get_next_token()
+        if token[1] == '}':
+            print('\t'*self._indentation, token[0]+':', token[1])
+
+        self._indentation-=1
         return
 
-    def parse_let_statement(self, number):
+    def parse_let_statement(self):
+        print('\t'*self._indentation, 'let_statement:')
+
+        self._indentation+=1
+        print('\t'*self._indentation, 'keyword:', 'let')
+
+        token = self._tokenizer.get_next_token()
+
+        if token[0] == 'identifier':
+            print('\t'*self._indentation, token[0]+':', token[1])
+
+        token = self._tokenizer.get_next_token()
+        if token[1] == '=':
+            print('\t'*self._indentation, 'op:', token[1])
+            self.parse_expresion()
+            token = self._tokenizer.get_next_token()
+
+        
+        if token[1] == ';':
+            print('\t'*self._indentation, token[0]+':', token[1])
+
+        self._indentation-=1
+
         return
-    
-    def parse_expression_list(self):
-        return
-    
+
+
     def parse_expresion(self):
         print('\t'*self._indentation, 'expression:')
 
         token = self._tokenizer.get_next_token()
         self._indentation+=1
-        
+
         if token[0] in ['identifier', 'integer', 'string']:
             self.parse_term(token)
 
         self._indentation-=1
 
         return
-    
+
+
     def parse_term(self, terminal):
         print('\t'*self._indentation, 'term:')
         self._indentation+=1
 
         print('\t'*self._indentation, terminal[0]+':', terminal[1])
+
+        self._indentation-=1
+        
         return
-    
