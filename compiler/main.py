@@ -1,17 +1,14 @@
 from z_tokenizer import ZTokenizer
+from z_parser import ZParser
+from z_analyzer import ZAnalyzer
 
 def main():
-    f = open("tests/test1.z", 'r')
+    f = open("tests/test4.z", 'r')
 
     file_string = f.read()
-    
-    tokenizer = ZTokenizer(file_string)
-    token = None
-    while True:
-        token = tokenizer.get_next_token()
-        if token == None:
-            break
-        print(token)
+
+    analyzer = ZAnalyzer(file_string)
+    analyzer.analyze()
 
 if __name__ == '__main__':
     main()
