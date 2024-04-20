@@ -1,4 +1,4 @@
-class MyParser:
+class ZParser:
     def __init__(self):
         return
     
@@ -9,4 +9,4 @@ class MyParser:
         return self.numeric_literal()
 
     def _numeric_literal(self, number):
-        
+        return
