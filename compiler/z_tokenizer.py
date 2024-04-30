@@ -3,7 +3,9 @@ import re
 class ZTokenizer:
 
     _keywords = ['if', 'true', 'false', 'let', 'int', 'bool', 'string']
-    _symbols = ['{', '}', '(', ')', '[', ']',';', '+', '-', '*', '/', '&', '|', '<', '>', '=', '~']
+    _symbols = ['{', '}', '(', ')', '[', ']',';', '+', '-', '*', '/', '&', '|', '<', '>', '=', '~', '==', '>=', '<=']
+    _op = ['+', '-', '*', '/', '&', '|', '<', '>', '=', '~', '==', '>=', '<=']
+    _token = ''
 
     def __init__(self, program):
         self._cursor = 0
@@ -15,7 +17,7 @@ class ZTokenizer:
         if (not self.has_more_tokens()):
             return None
 
-        token = ''
+        self._token = ''
 
         # first: clearning white spaces
         while self.is_whitespace():
@@ -25,19 +27,24 @@ class ZTokenizer:
 
         # second: handling symbols
         if self._program[self._cursor] in self._symbols:
-            token = self._program[self._cursor]
-            self._cursor+=1
+            if (self._program[self._cursor] in ['>', '<', '!', '='] and self._program[self._cursor+1] == '='):
+                operator = self._program[self._cursor:self._cursor+2]
+                self._token = operator
+                self._cursor+=2
+            else:
+                self._token = self._program[self._cursor]
+                self._cursor+=1
 
 
         # third: handling strings
         elif self._program[self._cursor] == '"':
             self._cursor+=1
-            token = '"'
+            self._token = '"'
 
             while (self.has_more_tokens()):
 
                 current_char = self._program[self._cursor]
-                token = token + current_char
+                self._token = self._token + current_char
                 self._cursor+=1
                 if current_char == '"':
                     break
@@ -48,11 +55,11 @@ class ZTokenizer:
             and not self.is_whitespace() and not self._program[self._cursor] == '"':
                 
                 current_char = self._program[self._cursor]
-                token = token + current_char
+                self._token = self._token + current_char
                 self._cursor+=1
 
-        type = self.token_type(token)
-        return (type, token)
+        type = self.token_type(self._token)
+        return (type, self._token)
 
     # returning the type of token
     def token_type(self, token):
@@ -61,6 +68,8 @@ class ZTokenizer:
         
         if token[0] == '"' and token[-1] == '"':
             return 'string'
+        elif token in self._op:
+            return 'operator'
         elif token in self._symbols:
             return 'symbol'
         elif integer_pattern.match(token):

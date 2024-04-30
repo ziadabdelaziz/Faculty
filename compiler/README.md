@@ -14,7 +14,7 @@
 * **identifier:** sequence of letters, digits, and underscore (`_`) not starting with a digit
 
 ### Program Structure
-* **condition:** `if` `(` expression+ `)` such that
+* **condition:** `if` `(` expression+ `)` such
 * **subroutine:** `{` statment* `}`
 
 ### Statements:
@@ -23,10 +23,11 @@
 * **if_statement:** `if` `(` expression `)` `{` statements `}`
 * **let_statement:** `let` identifier `=` expression `;`
 * **dec_statement:** type identifier `=` expression `;`
+
 ### Expressions:
 * **expression:** term (op term)?
-* **term:** identifier | integer_constant | string_constant | `(`expression`)` | unary_op term
-* **op:** `+` | `-` | `*` | `=` | `>` | `<`
+* **term:** identifier | integer_constant | string_constant
+* **op:** `+` | `-` | `*` | `=` | `>` | `<` | `<=` | `>=` | `==` | `!=`
 * **unary_op:** `~`
 * **type:** `bool` | `int` | `char` | `string`
 

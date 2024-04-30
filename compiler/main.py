@@ -1,9 +1,18 @@
-from z_tokenizer import ZTokenizer
-from z_parser import ZParser
+import sys
 from z_analyzer import ZAnalyzer
 
 def main():
-    f = open("tests/test4.z", 'r')
+    if len(sys.argv) != 2:
+        print('you must provide one file name to compile')
+        sys.exit(-1)
+
+    filename = sys.argv[1]
+
+    if filename[-2:] != '.z':
+        print('your file must end with ".z"')
+        sys.exit(-1)
+
+    f = open(filename, 'r')
 
     file_string = f.read()
 

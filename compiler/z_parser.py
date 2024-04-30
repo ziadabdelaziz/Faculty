@@ -40,6 +40,7 @@ class ZParser:
 
         token = self._tokenizer.get_next_token()
         if token[1] == '=':
+            print(token)
             print('\t'*self._indentation, 'op:', token[1])
             self.parse_expresion()
             token = self._tokenizer.get_next_token()
@@ -61,19 +62,38 @@ class ZParser:
         if token[1] == '(':
             print('\t'*self._indentation, token[0]+':', token[1])
             self.parse_expresion()
+        else:
+            raise Exception('Syntax Error!')
 
         token = self._tokenizer.get_next_token()
-        if token[1] == '(':
+        if token[1] in ['==', '>=', '<=', '>', '<']:
             print('\t'*self._indentation, token[0]+':', token[1])
-            
+            self.parse_expresion()
+        elif token[0] in ['identifier', 'integer', 'string']:
+            print('\t'*self._indentation, 'expression:')
+            self.parse_term(token) 
+            self._indentation+=1
+        else:
+            raise Exception('Syntax Error!')
+
+        token = self._tokenizer.get_next_token()
+        if token[1] == ')':
+            print('\t'*self._indentation, token[0]+':', token[1])
+        else:
+            raise Exception('Syntax Error!')
+
         token = self._tokenizer.get_next_token()
         if token[1] == '{':
             print('\t'*self._indentation, token[0]+':', token[1])
             self.parse_statements()
+        else:
+            raise Exception('Syntax Error!')
         
         token = self._tokenizer.get_next_token()
         if token[1] == '}':
             print('\t'*self._indentation, token[0]+':', token[1])
+        else:
+            raise Exception('Syntax Error!')
 
         self._indentation-=1
         return
