@@ -1,149 +1,133 @@
 from z_tokenizer import ZTokenizer
+from z_symbol_table import ZSymbolTable
 
-class ZParser:
+
+class ZParserBeta:
     _indentation = 0
+    _current_token = ''
+    _previous = False
+    _symbol_table = ZSymbolTable()
 
-    def __init__(self, program):
+    def __init__(self, program, symbol_table):
         self._tokenizer = ZTokenizer(program)
+        self._symbol_table = symbol_table
         return
+
 
     def parse_statements(self):
-        print('statements:')
+        self._current_token = self._tokenizer.get_next_token()
+        if self._current_token == None:
+            return
 
-        token = self._tokenizer.get_next_token()
+        if self._current_token[1] == '}':
+            self._previous = True
+            return
+
+        print('\t'*self._indentation+'statements:')
         self._indentation+=1
 
-        while token:
-            if token[1] in ['bool', 'int', 'string']:
-                self.parse_dec_statement(token)
-            elif token[1] == 'let':
-                self.parse_let_statement()
-            elif token[1] == 'if':
-                self.parse_if_statement()
+        if self._current_token[1] in ['int', 'string']:
+            self.parse_dec_statement(self._current_token)
+        elif self._current_token[1] == 'let':
+            self.parse_let_statement()
+        elif self._current_token[1] == 'if':
+            self.parse_if_statement()
+        else:
+            raise Exception('undefined statement')
 
-            token = self._tokenizer.get_next_token()
+        self._indentation-=1
+        self.parse_statements()
+
+
+    def parse_dec_statement(self, type):
+        print('\t'*self._indentation+'dec_statement:')
+        self._indentation+=1
+
+        print('\t'*self._indentation+type[0]+':', type[1])
+
+        self.expect('identifier', 0)
+        self._symbol_table.insert(self._current_token[1], type[1])
+        self.expect('=', 1)
+        self.parse_expression()
+        self.expect(';', 1)
 
         self._indentation-=1
 
-        return
-
-    def parse_dec_statement(self, terminal):
-        print('\t'*self._indentation, 'dec_statement:')
-
-        self._indentation+=1
-        print('\t'*self._indentation, terminal[0]+':', terminal[1])
-
-        token = self._tokenizer.get_next_token()
-
-        if token[0] == 'identifier':
-            print('\t'*self._indentation, token[0]+':', token[1])
-
-        token = self._tokenizer.get_next_token()
-        if token[1] == '=':
-            print(token)
-            print('\t'*self._indentation, 'op:', token[1])
-            self.parse_expresion()
-            token = self._tokenizer.get_next_token()
-
-        if token[1] == ';':
-            print('\t'*self._indentation, token[0]+':', token[1])
-
-        self._indentation-=1
-
-        return
 
     def parse_if_statement(self):
-        print('\t'*self._indentation, 'if_statement:')
-
+        print('\t'*self._indentation+'if_statement:')
         self._indentation+=1
-        print('\t'*self._indentation, 'keyword:', 'if')
 
-        token = self._tokenizer.get_next_token()
-        if token[1] == '(':
-            print('\t'*self._indentation, token[0]+':', token[1])
-            self.parse_expresion()
-        else:
-            raise Exception('Syntax Error!')
+        print('\t'*self._indentation+self._current_token[0]+':', self._current_token[1])
 
-        token = self._tokenizer.get_next_token()
-        if token[1] in ['==', '>=', '<=', '>', '<']:
-            print('\t'*self._indentation, token[0]+':', token[1])
-            self.parse_expresion()
-        elif token[0] in ['identifier', 'integer', 'string']:
-            print('\t'*self._indentation, 'expression:')
-            self.parse_term(token) 
-            self._indentation+=1
-        else:
-            raise Exception('Syntax Error!')
-
-        token = self._tokenizer.get_next_token()
-        if token[1] == ')':
-            print('\t'*self._indentation, token[0]+':', token[1])
-        else:
-            raise Exception('Syntax Error!')
-
-        token = self._tokenizer.get_next_token()
-        if token[1] == '{':
-            print('\t'*self._indentation, token[0]+':', token[1])
-            self.parse_statements()
-        else:
-            raise Exception('Syntax Error!')
-        
-        token = self._tokenizer.get_next_token()
-        if token[1] == '}':
-            print('\t'*self._indentation, token[0]+':', token[1])
-        else:
-            raise Exception('Syntax Error!')
+        self.expect('(', 1)
+        self.parse_expression()
+        self.expect(')', 1)
+        self.expect('{', 1)
+        self.parse_statements()
+        self.expect('}', 1)
 
         self._indentation-=1
-        return
+
 
     def parse_let_statement(self):
-        print('\t'*self._indentation, 'let_statement:')
-
+        print('\t'*self._indentation+'let_statement:')
         self._indentation+=1
-        print('\t'*self._indentation, 'keyword:', 'let')
 
-        token = self._tokenizer.get_next_token()
+        print('\t'*self._indentation+self._current_token[0]+':', self._current_token[1])
 
-        if token[0] == 'identifier':
-            print('\t'*self._indentation, token[0]+':', token[1])
+        self.expect('identifier', 0)
 
-        token = self._tokenizer.get_next_token()
-        if token[1] == '=':
-            print('\t'*self._indentation, 'op:', token[1])
-            self.parse_expresion()
-            token = self._tokenizer.get_next_token()
+        if self._symbol_table.lookup(self._current_token) == None:
+            error_statement = '"'+self._current_token[1]+'"'+' is not defined'
+            raise Exception(error_statement)
 
-        
-        if token[1] == ';':
-            print('\t'*self._indentation, token[0]+':', token[1])
+        self.expect('=', 1)
+        self.parse_expression()
+        self.expect(';', 1)
 
         self._indentation-=1
 
-        return
 
-
-    def parse_expresion(self):
-        print('\t'*self._indentation, 'expression:')
-
-        token = self._tokenizer.get_next_token()
+    def parse_expression(self):
+        print('\t'*self._indentation, 'expression')
         self._indentation+=1
 
-        if token[0] in ['identifier', 'integer', 'string']:
-            self.parse_term(token)
+        self.parse_term()
 
         self._indentation-=1
 
-        return
 
-
-    def parse_term(self, terminal):
-        print('\t'*self._indentation, 'term:')
+    def parse_term(self):
+        print('\t'*self._indentation, 'term')
         self._indentation+=1
-
-        print('\t'*self._indentation, terminal[0]+':', terminal[1])
-
+        self.expect(['identifier', 'integer', 'string'], 0)
+        try:
+            self.expect('operator', 0)
+            self.parse_term()
+        except:
+            self._previous = True
+    
         self._indentation-=1
-        
-        return
+
+
+    def expect(self, token, index):
+        if not self._previous:
+            self._current_token = self._tokenizer.get_next_token()
+        else:
+            self._previous = False
+
+        # if we are expecting different possibilities
+        if isinstance(token, list):
+            if self._current_token[index] in token:
+                print('\t'*self._indentation, self._current_token[0], ':', self._current_token[1])
+            else:
+                error_statement = 'expected term of type' ,token,'but found', self._current_token
+                raise Exception(error_statement)
+
+        # if we are expecting one possibility
+        elif self._current_token[index] == token:
+            print('\t'*self._indentation, self._current_token[0], ':', self._current_token[1])
+        else:
+            error_statement = 'expected', token, 'of type' ,self._tokenizer.token_type(token),'but found', self._current_token
+            raise Exception(error_statement)

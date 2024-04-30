@@ -1,0 +1,4 @@
+int x = 5;
+int y = 6;
+string name = "ziad";
+int z = x + y;

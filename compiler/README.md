@@ -7,15 +7,11 @@
 
 ## **Grammer**
 ### Lexical elements:
-* **keyword:** `if` | `let` | `int` | `string` | `true` | `false`
-* **symbol:** `{` | `}` | `(` | `)` | `[` | `]` | `,` | `;`  | `+` | `-` | `*` | `/` | `&` | `|` | `<` | `>` | `=` | `~`
+* **keyword:** `if` | `let` | `int` | `string`
+* **symbol:** `{` | `}` | `(` | `)` | `,` | `;`  | `+` | `-` | `*` | `/` | `&` | `|` | `<` | `>` | `=` | `~`
 * **integer_constant:** a decimal number
 * **string_constant:** `"` sequence of unicode characters not including double quote or newline `"`
-* **identifier:** sequence of letters, digits, and underscore (`_`) not starting with a digit
-
-### Program Structure
-* **condition:** `if` `(` expression+ `)` such
-* **subroutine:** `{` statment* `}`
+* **identifier:** sequence of letters, digits not starting with a digit
 
 ### Statements:
 * **statement:** dec_statement | let_statement | if_statement
@@ -28,8 +24,7 @@
 * **expression:** term (op term)?
 * **term:** identifier | integer_constant | string_constant
 * **op:** `+` | `-` | `*` | `=` | `>` | `<` | `<=` | `>=` | `==` | `!=`
-* **unary_op:** `~`
-* **type:** `bool` | `int` | `char` | `string`
+* **type:** `int` | `string`
 
 ### Rules
 * **Terminals:**: keyword, symbol, integer_constant, string_constant, identifier
